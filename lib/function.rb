@@ -47,9 +47,13 @@ class Function
 				latitude = f["location"]["latitude"]
 				longitude = f["location"]["longitude"]
 
-				@place = Place.new(business_id: business_id, business_name: business_name, cat_name: cat_name,
-				latitude: latitude, longitude: longitude, city_id: city_id)
-				@place.save
+				begin
+					@place = Place.new(business_id: business_id, business_name: business_name, cat_name: cat_name,
+					latitude: latitude, longitude: longitude, city_id: city_id)
+					@place.save
+				rescue ActiveRecord::RecordNotUnique
+					next
+				end
 				k += 1
 			end
 			feed = feed.next_page
