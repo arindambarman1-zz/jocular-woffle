@@ -27,6 +27,8 @@ gem 'angularjs-rails', '~> 1.4.4'
 gem "bootstrap-sass", "3.3.5"
 gem 'angular-rails-templates'
 
+gem 'rubocop', require: false
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
