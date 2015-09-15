@@ -11,10 +11,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150914230923) do
+ActiveRecord::Schema.define(version: 20150915173041) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "checkins", force: :cascade do |t|
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+    t.integer  "business_id", limit: 8
+    t.integer  "checkins",    limit: 8
+  end
+
+  create_table "cities", force: :cascade do |t|
+    t.string   "name"
+    t.string   "min_lat"
+    t.string   "max_lat"
+    t.string   "min_long"
+    t.string   "max_long"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "places", force: :cascade do |t|
     t.string   "business_name"
@@ -24,8 +41,10 @@ ActiveRecord::Schema.define(version: 20150914230923) do
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
     t.integer  "business_id",   limit: 8
-    t.integer  "checkins",      limit: 8
+    t.integer  "city_id"
   end
+
+  add_index "places", ["city_id"], name: "index_places_on_city_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "first_name"
@@ -35,4 +54,5 @@ ActiveRecord::Schema.define(version: 20150914230923) do
     t.integer  "user_id",    limit: 8
   end
 
+  add_foreign_key "places", "cities"
 end
