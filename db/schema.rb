@@ -47,13 +47,5 @@ ActiveRecord::Schema.define(version: 20150915221358) do
   add_index "places", ["business_id"], name: "index_places_on_business_id", unique: true, using: :btree
   add_index "places", ["city_id"], name: "index_places_on_city_id", using: :btree
 
-  create_table "users", force: :cascade do |t|
-    t.string   "first_name"
-    t.string   "last_name"
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
-    t.integer  "user_id",    limit: 8
-  end
-
   add_foreign_key "places", "cities"
 end
