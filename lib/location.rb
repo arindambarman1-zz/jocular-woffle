@@ -1,23 +1,59 @@
-require "#{Rails.root}/app/models/city"
-
 class Location
-	def self.add_city
+  def create_grid(name)
+    grid = Grid.new
+    city = City.find_by name: name
+    min_lat = city['min_lat'].to_f
+    max_lat = city['max_lat'].to_f
+    min_long = city['min_long'].to_f
+    max_long = city['max_long'].to_f
+    city_id = city['id']
+    coords = grid.create_grid(min_lat, max_lat, min_long, max_long)
+    payload = { 'type': 'place', 'distance': '3000', 'limit': 500 }
+    j = 0
+    coords.each do |coord|
+      begin
+        print "#{city['name']} places for Coordinate Pair #{j + 1}\n"
+        payload['center'] = coord.join(',')
+        feed = FB.graph_call('search', payload)
+        enter_into_db(feed, city_id)
+      rescue Faraday::ConnectionFailed
+        sleep 5
+        print "Error Handling for Coordinate Pair #{j + 1}\n"
+        feed = FB.graph_call('search', payload)
+        enter_into_db(feed, city_id)
+      end
+      j += 1
+    end
+  end
 
-		@bangalore = City.new(name:"Bangalore", min_lat:"12.773509", max_lat:"13.162649", min_long:"77.391904", max_long:"77.803226")
-		@bangalore.save
+  def collect_all_places
+    City.find_each do |city|
+      create_grid(city['name'])
+    end
+  end
 
-		@mumbai = City.new(name:"Mumbai", min_lat:"18.891356", max_lat:"19.178820", min_long:"72.778564", max_long:"72.980138")
-		@mumbai.save
-
-		@delhi = City.new(name:"Delhi", min_lat:"28.411976", max_lat:"28.889211", min_long:"76.840132", max_long:"77.333143")
-		@delhi.save
-
-		@kolkata = City.new(name:"Kolkata", min_lat:"22.349050", max_lat:"23.006679", min_long:"88.194866", max_long:"88.539562")
-		@kolkata.save
-
-		@chennai = City.new(name:"Chennai", min_lat:"12.837097", max_lat:"13.258911", min_long:"80.105891", max_long:"80.305675")
-		@chennai.save
-
-	end
-	
+  def enter_into_db(feed, city_id)
+    k = 0
+    while feed.size != 0
+      feed.each do |f|
+        business_id = f['id']
+        business_name = f['name']
+        cat_name = f['category_list'][0]['name']
+        latitude = f['location']['latitude']
+        longitude = f['location']['longitude']
+        begin
+          @place = Business.new(business_id: business_id, business_name:
+                                business_name, cat_name: cat_name,
+                                latitude: latitude, longitude: longitude,
+                                city_id: city_id)
+          @place.save
+          k += 1
+        rescue ActiveRecord::RecordNotUnique
+          next
+        end
+      end
+      feed = feed.next_page
+    end
+    print("Found #{k} places for Coordinate Pair\n")
+  end
 end
