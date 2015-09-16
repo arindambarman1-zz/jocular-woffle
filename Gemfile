@@ -21,6 +21,8 @@ gem 'jquery-rails'
 gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'twitter', '~> 5.14.0'
 
+gem 'execjs'
+gem 'therubyracer'
 # javascript
 gem 'momentjs-rails', '~> 2.10.3'
 gem 'angularjs-rails', '~> 1.4.4'
@@ -40,6 +42,9 @@ gem 'font-awesome-rails', '~> 4.4.0.0'
 # gem 'capistrano-rails', group: :development
 
 group :development, :test do
+  gem "capistrano", "~> 3.4", { require: false }
+  gem "capistrano-rails", "~> 1.1", { require: false }
+  gem 'capistrano-rvm'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
 
