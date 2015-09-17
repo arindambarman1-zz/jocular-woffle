@@ -12,8 +12,8 @@ class Grid
   end
 
   def create_grid(lat_min, lat_max, long_min, long_max)
-    x = linspace(lat_min, lat_max, 10)
-    y = linspace(long_min, long_max, 10)
+    x = linspace(lat_min, lat_max, 20)
+    y = linspace(long_min, long_max, 20)
     coord = x.product(y)
     return coord
   end

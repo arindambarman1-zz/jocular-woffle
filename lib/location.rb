@@ -11,14 +11,13 @@ class Location
     payload = { 'type': 'place', 'distance': '3000', 'limit': 500 }
     j = 0
     coords.each do |coord|
-      begin
+      Retryable.retryable(
+        tries: 10,
+        on: Faraday::ConnectionFailed,
+        sleep: ->(n) { 4**n }
+      ) do
         print "#{city['name']} places for Coordinate Pair #{j + 1}\n"
         payload['center'] = coord.join(',')
-        feed = FB.graph_call('search', payload)
-        enter_into_db(feed, city_id)
-      rescue Faraday::ConnectionFailed
-        sleep 5
-        print "Error Handling for Coordinate Pair #{j + 1}\n"
         feed = FB.graph_call('search', payload)
         enter_into_db(feed, city_id)
       end
@@ -54,6 +53,6 @@ class Location
       end
       feed = feed.next_page
     end
-    print("Found #{k} places for Coordinate Pair\n")
+    print("Found #{k} places\n")
   end
 end
