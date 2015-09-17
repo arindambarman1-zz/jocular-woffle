@@ -6,6 +6,7 @@
 
 # Ignore bundler config.
 /.bundle
+.DS_Store
 
 # Ignore the default SQLite database.
 /db/*.sqlite3
@@ -19,7 +20,6 @@
 <<<<<<< HEAD
 
 # Ignore Database File
-/config/locales/database.yml
 =======
 /config/database.yml
 >>>>>>> 5112b064e80ab372df86856571c1011d2bf51e72
