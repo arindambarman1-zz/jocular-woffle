@@ -1,0 +1,9 @@
+<h1>Cities#index</h1>
+<p>Find me in app/views/cities/index.html.erb</p>
+
+<% @cities.each do |city| %>
+<tr>
+  <td><%= city.name %></td>
+  <%= link_to("Show", {controller: 'details', action: 'show', id: city.id}, class: 'details show') %>
+</tr>
+<% end %>

@@ -1,0 +1,27 @@
+<h4>Top Destinations</h4>
+<table>
+	<% @hip_places.each do |destination| %>
+		<tr>
+			<td><%= destination.business_name %></td>
+			<td><%= destination.checkin_no %></td>
+		</tr>
+	<% end %>
+</table>
+<h4>Top Categories</h4>
+<table>
+	<% @hip_cats.each do |destination| %>
+		<tr>
+			<td><%= destination[0] %></td>
+			<td><%= destination[1] %></td>
+		</tr>
+	<% end %>
+</table>
+<h4>Most Active Categories</h4>
+<table>
+	<% @active_cats.each do |destination| %>
+		<tr>
+			<td><%= destination[0] %></td>
+			<td><%= destination[1].round %></td>
+		</tr>
+	<% end %>
+</table>

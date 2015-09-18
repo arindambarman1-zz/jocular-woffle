@@ -9,7 +9,10 @@ class Checkins
           sleep: ->(n) { 4**n }
         ) do
           places.each do |place|
-            batch_api.get_object(place['business_id'].to_s, payload_business)
+            if Checkin.find_by_id(place.business_id).nil?
+              batch_api.get_object(place['business_id'].to_s, payload_business)
+            else
+              next
           end
         end
       end
