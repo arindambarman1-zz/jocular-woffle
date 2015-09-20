@@ -1,1 +1,0 @@
-FB = Koala::Facebook::API.new("972191376155283|31b8c3b596357230ef32456c1fecfa7f")
