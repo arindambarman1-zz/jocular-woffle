@@ -6,7 +6,7 @@ class Checkins
         Retryable.retryable(
           tries: 10,
           on: Faraday::ConnectionFailed,
-          sleep: ->(n) { 4**n }
+          sleep: ->(n) { 8**n }
         ) do
           places.each do |place|
             if Checkin.find_by_id(place.business_id).nil?
