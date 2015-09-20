@@ -3,13 +3,17 @@ class Checkins
     payload_business = { 'fields': 'checkins' }
     Business.select('business_id').find_in_batches(batch_size: 50) do |places|
       results = FB.batch do |batch_api|
-        begin
+        Retryable.retryable(
+          tries: 10,
+          on: Faraday::ConnectionFailed,
+          sleep: ->(n) { 4**n }
+        ) do
           places.each do |place|
-            batch_api.get_object(place['business_id'].to_s, payload_business)
+            if Checkin.find_by_id(place.business_id).nil?
+              batch_api.get_object(place['business_id'].to_s, payload_business)
+            else
+              next
           end
-        rescue Faraday::ConnectionFailed
-          sleep 5
-          batch_api.get_object(place['business_id'].to_s, payload_business)
         end
       end
       results.each do |result|
